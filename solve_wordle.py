@@ -34,7 +34,7 @@ def main():
     # once matched, a letter is removed
     move = set()
 
-    # dictionary of letter to known bad position for that letter
+    # dictionary of letter to known bad positions for that letter
     # - 'yellow' letters are 'bad' for a single position
     # - 'gray' letters are 'bad' for all positions
     bad = {}
@@ -87,6 +87,9 @@ def main():
 
         # Rerank words
         word_list = rank_words(word_list, match, move, bad)
+
+        # debug
+        # print('Top 5 words:', word_list[:5])
 
         # choose next word
         for word in word_list:
@@ -159,26 +162,32 @@ def rank_letters(word_list, match={}, move=set(), bad={}):
         for c in word:
             if c not in letter_counts:
                 letter_counts[c] = 1
-            elif c in bad:
-                letter_counts[c] = 0
             else:
                 letter_counts[c] += 1
 
-    # rank words
+    # rank letters
     letter_rank = {}
 
     for c, score in sorted(letter_counts.items(), key=lambda item: item[1], reverse=True):
         for i in range(5):
+
             scale_factor = 1
+
             if (i in match) and (match[i] == c):
+                # green letter at this position in a previous guess
+
                 if len(match) + len(move) < 4:
                     scale_factor = 0
                 else:
                     scale_factor = len(match) / 2
             elif c in match.values():
+                # green letter at a different position in previous guess
+
                 scale_factor = 0
             elif c in move:
-                scale_factor = 0.25
+                # yellow letter from a previous guess
+
+                scale_factor = 2
 
             letter_rank[(c, i)] = (score * scale_factor)
     return letter_rank
