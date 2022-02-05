@@ -27,8 +27,16 @@ def main():
         print('Word not found in dictionary!')
         return
 
+    # dictionary of position to matched letter
     match = {}
+
+    # set of letters that are in the wrong position (not yet matched)
+    # once matched, a letter is removed
     move = set()
+
+    # dictionary of letter to known bad position for that letter
+    # - 'yellow' letters are 'bad' for a single position
+    # - 'gray' letters are 'bad' for all positions
     bad = {}
 
     guess = word_list[0]
@@ -93,6 +101,9 @@ def main():
 
 
 def rank_words(word_list, match={}, move=set(), bad={}):
+    """ Returns a list of words ordered by score in descending order.
+    """
+
     # filter words
     filtered_word_list = []
 
@@ -116,6 +127,7 @@ def rank_words(word_list, match={}, move=set(), bad={}):
         for c, i in zip(word, range(5)):
             letter_scale = 1
 
+            # scale the score of repeated letters
             if c in seen_letters:
                 letter_scale = 0
             else:
@@ -137,6 +149,9 @@ def rank_words(word_list, match={}, move=set(), bad={}):
 
 
 def rank_letters(word_list, match={}, move=set(), bad={}):
+    """ Returns a dictionary of a tuple (letter, position) to score.
+    """
+
     # count leters
     letter_counts = {}
 
