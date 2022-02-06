@@ -34,7 +34,7 @@ def main():
     # once matched, a letter is removed
     move = set()
 
-    # dictionary of letter to known bad positions for that letter
+    # dictionary of letter to set of known bad positions for that letter
     # - 'yellow' letters are 'bad' for a single position
     # - 'gray' letters are 'bad' for all positions
     bad = {}
@@ -138,15 +138,7 @@ def rank_words(word_list, match={}, move=set(), bad={}):
 
             score += (letter_rank[(c, i)] * letter_scale)
 
-        word_scale = 1
-
-        # if (len(match) + len(move)) < 4:
-        #     if len(match.keys() & set(word)) > 0:
-        #         word_scale = 0.25
-        #     elif len(move & set(word)) > 0:
-        #         word_scale = 0.5
-
-        word_rank[word] = (score * word_scale)
+        word_rank[word] = score
 
     return [w[0] for w in sorted(word_rank.items(), key=lambda item: item[1], reverse=True)]
 
